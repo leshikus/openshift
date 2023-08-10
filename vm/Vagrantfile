@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  unless Vagrant.has_plugin?("vagrant-reload")
+    raise 'Plugin vagrant-reload is not installed!'
+  end
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http     = ENV.fetch('http_proxy', false)
+    config.proxy.https    = ENV.fetch('https_proxy', false)
+    config.proxy.no_proxy = ENV.fetch('no_proxy', false)
+  end
+
+  jumphost_name = "jumphost"
+  config.vm.box = "generic/ubuntu2204"
+  libvirt_default_prefix = "0"
+
+  config.vm.provider "libvirt" do |lv|
+    lv.driver = "kvm"
+    lv.memory = "12228"
+    lv.cpus = 4
+    lv.storage_pool_name = "images"
+    lv.default_prefix = "#{libvirt_default_prefix}-"
+  end
+
+  config.vm.define "#{jumphost_name}" do |node|
+    node.vm.hostname = "#{jumphost_name}"
+
+    config.vm.network "private_network", type: "dhcp"
+  end
+end
+
