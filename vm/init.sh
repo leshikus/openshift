@@ -2,6 +2,6 @@
 
 cd $(dirname "$0")
 
-vagrant plugin install vagrant-proxyconf vagrant-reload
+vagrant plugin install vagrant-proxyconf vagrant-reload vagrant-scp
 vagrant up
 
